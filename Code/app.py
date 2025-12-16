@@ -1,5 +1,6 @@
 import csv
-
+import time
+from .sensor import Sensor
 from datetime import datetime
 from collections import deque
 
@@ -25,7 +26,22 @@ class DataHandler:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data.append([timestamp, humidity, temperature])
 
-db = DataHandler(LENGHT)
+class Watcher:
+    def __init__(self):
+        self.sensor = Sensor()
+        self.dataBase = DataHandler(LENGHT)
 
-db.appendData(50.2, 23.4)
-db.writeData()
+
+    def run(self):
+        while True:
+            for i in range(3):
+                humidity, temperature = self.sensor.read()
+                if humidity is not None and temperature is not None:
+                    self.dataBase.appendData(humidity, temperature)
+                    self.dataBase.writeData()
+                    break
+                else:
+                    time.sleep(1)
+            time.sleep(300)  # Wait for 5 minutes
+
+Watcher().run()
