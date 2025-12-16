@@ -2,18 +2,16 @@ import time
 import board
 import adafruit_dht
 
-# Use GPIO4 (BCM)
-dhtDevice = adafruit_dht.DHT11(board.D4)
 
-while True:
-    try:
-        temperature = dhtDevice.temperature
-        humidity = dhtDevice.humidity
+class Sensor:
+    def __init__(self):
+        self.dhtDevice = adafruit_dht.DHT11(board.D4)
 
-        print(f"Temp: {temperature:.1f}°C  Humidity: {humidity:.1f}%")
-
-    except RuntimeError as error:
-        # DHT sensors are slow & error-prone
-        print(error.args[0])
-
-    time.sleep(2)
+    def read(self):
+        try:
+            temperature = self.dhtDevice.temperature
+            humidity = self.dhtDevice.humidity
+            return humidity, temperature
+        except RuntimeError as error:
+            print(error.args[0])
+            return None, None
