@@ -19,7 +19,6 @@ class DataHandler:
             writer = csv.writer(f)
             writer.writerow(["TimeStamp", "Humidity", "Temperature"])
             for row in self.data:
-                print(row)
                 writer.writerow(row)
 
     def appendData(self, humidity, temperature):
