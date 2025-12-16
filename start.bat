@@ -4,4 +4,4 @@
 source venv/bin/activate
 
 # Run the Python script
-python app.py
+python Code/app.py
