@@ -1,6 +1,6 @@
 import csv
 import time
-from .sensor import Sensor
+from sensor import Sensor
 from datetime import datetime
 from collections import deque
 
