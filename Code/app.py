@@ -14,6 +14,12 @@ class DataHandler:
     def readData(self):
         self.data = deque(maxlen=self.lenght)
 
+        with open('data.csv', 'r') as f:
+            reader = csv.reader(f)
+            next(reader)  # Skip header
+            for row in reader:
+                self.data.append(row)
+
     def writeData(self):
         with open('data.csv', 'w', newline='') as f:
             writer = csv.writer(f)
