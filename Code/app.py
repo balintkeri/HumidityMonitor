@@ -1,4 +1,5 @@
 import csv
+import os
 import time
 import threading
 from sensor import Sensor
@@ -16,11 +17,12 @@ class DataHandler:
     def readData(self):
         self.data = deque(maxlen=self.lenght)
 
-        with open('data.csv', 'r') as f:
-            reader = csv.reader(f)
-            next(reader)  # Skip header
-            for row in reader:
-                self.data.append(row)
+        if  os.path.exists('data.csv'):
+            with open('data.csv', 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    self.data.append(row)
 
     def writeData(self):
         for i in range(3):
