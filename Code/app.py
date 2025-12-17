@@ -1,8 +1,10 @@
 import csv
 import time
+import threading
 from sensor import Sensor
 from datetime import datetime
 from collections import deque
+import flask
 
 LENGHT = 3 * 24 * 12 # 3 days of data at 5-minute intervals
 
@@ -21,11 +23,17 @@ class DataHandler:
                 self.data.append(row)
 
     def writeData(self):
-        with open('data.csv', 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(["TimeStamp", "Humidity", "Temperature"])
-            for row in self.data:
-                writer.writerow(row)
+        for i in range(3):
+            try:
+                with open('data.csv', 'w', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(["TimeStamp", "Humidity", "Temperature"])
+                    for row in self.data:
+                        writer.writerow(row)
+            except Exception as e:
+                time.sleep(1)
+            else:
+                break
 
     def appendData(self, humidity, temperature):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -38,6 +46,11 @@ class Watcher:
 
 
     def run(self):
+        thread = threading.Thread(target=self.mainLoop)
+        thread.daemon = True
+        thread.start()
+
+    def mainLoop(self):
         while True:
             for i in range(3):
                 humidity, temperature = self.sensor.read()
@@ -49,4 +62,20 @@ class Watcher:
                     time.sleep(1)
             time.sleep(300)  # Wait for 5 minutes
 
-Watcher().run()
+class Monitor:
+    def __init__(self):
+        self.app = flask.Flask(__name__)
+        self.watcher = Watcher()
+        self.watcher.run()
+        self.setupRoutes()
+        self.app.run(host='0.0.0.0', port=5040)
+
+    def setupRoutes(self):
+        @self.app.route('/')
+        def index():
+            data = list(self.watcher.dataBase.data)
+            return flask.render_template('index.html', data=data)
+        
+
+
+Monitor()
