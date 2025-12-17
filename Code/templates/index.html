@@ -8,6 +8,9 @@
     <header>
         <h1>KanBan board</h1>
     </header>
+    {% for row in data %}
+    <div></div>{{ row }}</div>
+    {% endfor %}
 </body>
 <script src="{{ url_for('static', filename='modal.js') }}"></script>
 </html>
