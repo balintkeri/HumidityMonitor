@@ -70,7 +70,7 @@ class Monitor:
         self.watcher = Watcher()
         self.watcher.run()
         self.setupRoutes()
-        self.app.run(host='0.0.0.0', port=5040)
+        self.app.run(host='0.0.0.0', port=8040)
 
     def setupRoutes(self):
         @self.app.route('/')
