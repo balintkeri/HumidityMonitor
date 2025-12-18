@@ -22,6 +22,7 @@ class DataHandler:
                 reader = csv.reader(f)
                 next(reader)  # Skip header
                 for row in reader:
+                    row = [row[0], float(row[1]), float(row[2])]
                     self.data.append(row)
 
     def writeData(self):
@@ -76,7 +77,10 @@ class Monitor:
         @self.app.route('/')
         def index():
             data = list(self.watcher.dataBase.data)
-            return flask.render_template('index.html', data=data)
+            temperature = self.watcher.dataBase.data[-1][2]
+            humidity = self.watcher.dataBase.data[-1][1]
+            lastReadingTime = self.watcher.dataBase.data[-1][0]
+            return flask.render_template('index.html', data=data, temperature=temperature, humidity=humidity, lastReadingTime=lastReadingTime)
         
 
 
